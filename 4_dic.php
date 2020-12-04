@@ -56,7 +56,7 @@ foreach ($passports as $passport) {
             if ($key == "cid")
                 continue;
 
-            echo "Evaluating $key:$value result is ".validate($key, $value)."\n";
+            //echo "Evaluating $key:$value result is ".validate($key, $value)."\n";
             if (validate($key, $value) == true)
                 $nValid++;
 
@@ -65,7 +65,7 @@ foreach ($passports as $passport) {
         if ($nValid == 7)
             $valid++;
 
-        echo "\n Number of valid fields: $nValid \n\n\n\n";
+        //echo "\n Number of valid fields: $nValid \n\n\n\n";
 
     }
 }
