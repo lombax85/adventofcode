@@ -1,5 +1,7 @@
 <?php
 
+// refactory secondo metodo di Sharpedge
+
 $regex1 = "/(.*) contain (.*)/";
 $regex2 = "/\d (.*?)s?(?:,|$)/";
 
