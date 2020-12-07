@@ -35,7 +35,6 @@ foreach ($rows as $row) {
 
 $stop = false;
 $count = count_child('shiny gold');
-var_dump($bags);
 
 function count_child($bagColor) {
     GLOBAL $bags;
@@ -54,6 +53,5 @@ function count_child($bagColor) {
     return $count;
 
 }
-
 
 echo $count;
