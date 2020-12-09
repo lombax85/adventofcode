@@ -20,7 +20,7 @@ for ($i = $prevI; $i < count($rows); $i++) {
 
    if ($sum == $find) {
        echo $sum."\n";
-       echo min($arr)."-".max($arr);
+       echo min($arr)+max($arr);
 
        die('found');
 
