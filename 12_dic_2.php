@@ -33,8 +33,6 @@ class ShipWithWaypoint {
     public function doAction($action, $number) {
         switch ($action) {
             case "L":
-                $this->rotateWayPointAroundShip($action, $number);
-                break;
             case "R":
                 $this->rotateWayPointAroundShip($action, $number);
                 break;
@@ -59,14 +57,14 @@ class ShipWithWaypoint {
 
     public function moveShipToWaypoint($times) {
 
-            $deltaX = $this->waypointX - $this->shipX;
-            $deltaY = $this->waypointY - $this->shipY;
+        $deltaX = $this->waypointX - $this->shipX;
+        $deltaY = $this->waypointY - $this->shipY;
 
-            $this->shipX = $this->shipX + $deltaX * $times;
-            $this->shipY = $this->shipY + $deltaY * $times;
+        $this->shipX = $this->shipX + $deltaX * $times;
+        $this->shipY = $this->shipY + $deltaY * $times;
 
-            $this->waypointX = $this->shipX + $deltaX;
-            $this->waypointY = $this->shipY + $deltaY;
+        $this->waypointX = $this->shipX + $deltaX;
+        $this->waypointY = $this->shipY + $deltaY;
 
     }
 
@@ -74,87 +72,18 @@ class ShipWithWaypoint {
         $times = $degrees / 90;
         for ($i = 0; $i < $times; $i++) {
 
-            $relativeX = $this->waypointX - $this->shipX;
-            $relativeY = $this->waypointY - $this->shipY;
+            // swap relative X & Y
+            $relativeY = $this->waypointX - $this->shipX;
+            $relativeX = $this->waypointY - $this->shipY;
 
-            switch ($direction) {
-                case "L":
-
-                    if ($relativeX >= 0 && $relativeY >= 0) {
-                        $bk = $relativeY;
-                        $relativeY = $relativeX;
-                        $relativeX = -$bk;
-                        break;
-                    }
-
-
-                    if ($relativeX >= 0 && $relativeY < 0) {
-                        $bk = $relativeX;
-                        $relativeX = -$relativeY;
-                        $relativeY = $bk;
-                        break;
-                    }
-
-
-                    if ($relativeX < 0 && $relativeY < 0) {
-                        $bk = $relativeY;
-                        $relativeY = $relativeX;
-                        $relativeX = -$bk;
-                        break;
-                    }
-
-
-                    if ($relativeX < 0 && $relativeY >= 0) {
-                        $bk = $relativeX;
-                        $relativeX = -$relativeY;
-                        $relativeY = $bk;
-                        break;
-                    }
-
-
-                    break;
-                case "R":
-                    if ($relativeX >= 0 && $relativeY >= 0) {
-                        $bk = $relativeX;
-                        $relativeX = $relativeY;
-                        $relativeY = -$bk;
-                        break;
-                    }
-
-
-                    if ($relativeX >= 0 && $relativeY < 0) {
-                        $bk = $relativeY;
-                        $relativeY = -$relativeX;
-                        $relativeX = $bk;
-                        break;
-                    }
-
-
-                    if ($relativeX < 0 && $relativeY < 0) {
-                        $bk = $relativeX;
-                        $relativeX = $relativeY;
-                        $relativeY = -$bk;
-                        break;
-                    }
-
-
-                    if ($relativeX < 0 && $relativeY >= 0) {
-                        $bk = $relativeY;
-                        $relativeY = -$relativeX;
-                        $relativeX = $bk;
-                        break;
-                    }
-
-
-                    break;
+            if ($direction == "L") {
+                $relativeX = $relativeX * -1;
+            } else {
+                $relativeY = $relativeY * -1;
             }
 
             $this->waypointX = $relativeX + $this->shipX;
             $this->waypointY = $relativeY + $this->shipY;
-
         }
     }
-
-
-
 }
