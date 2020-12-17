@@ -2,7 +2,7 @@
 /**
  * 19.39 -
  */
-$data = file_get_contents('./adventofcode2020/SharpEdgeMarshall/puzzle12.txt');
+$data = file_get_contents('./12_dic.txt');
 $rows = explode("\n", $data);
 
 $ship = new ShipWithWaypoint();
@@ -11,13 +11,6 @@ foreach ($rows as $row) {
     $action = substr($row, 0, 1);
     $number = substr($row, 1, strlen($row) - 1);
 
-    if ($row == "L90") {
-        $l++;
-        if ($l == 9) {
-
-            echo "";
-        }
-    }
     $ship->doAction($action, $number);
 }
 
@@ -66,16 +59,14 @@ class ShipWithWaypoint {
 
     public function moveShipToWaypoint($times) {
 
-        for ($i = 0; $i < $times; $i++) {
             $deltaX = $this->waypointX - $this->shipX;
             $deltaY = $this->waypointY - $this->shipY;
 
-            $this->shipX = $this->waypointX;
-            $this->shipY = $this->waypointY;
+            $this->shipX = $this->shipX + $deltaX * $times;
+            $this->shipY = $this->shipY + $deltaY * $times;
 
-            $this->waypointX += $deltaX;
-            $this->waypointY += $deltaY;
-        }
+            $this->waypointX = $this->shipX + $deltaX;
+            $this->waypointY = $this->shipY + $deltaY;
 
     }
 
