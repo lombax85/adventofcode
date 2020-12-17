@@ -28,91 +28,57 @@ class Ship {
     }
 
     public function doAction($action, $number) {
+
+
         switch ($action) {
             case "L":
-                $this->direction = $this->calculateDirectionFromDirectionAndDegrees($this->direction, "L", $number);
-                break;
             case "R":
-                $this->direction = $this->calculateDirectionFromDirectionAndDegrees($this->direction, "R", $number);
+                $this->direction = $this->calculateDirectionFromDirectionAndDegrees($this->direction, $action, $number);
                 break;
             case "F":
-                $this->moveForward($number);
+                $this->moveForward($number, $this->direction);
                 break;
             case "N":
-                $prev = $this->direction;
-                $this->direction = 0;
-                $this->moveForward($number);
-                $this->direction = $prev;
+                $this->moveForward($number, 0);
                 break;
             case "E":
-                $prev = $this->direction;
-                $this->direction = 1;
-                $this->moveForward($number);
-                $this->direction = $prev;
+                $this->moveForward($number, 1);
                 break;
             case "S":
-                $prev = $this->direction;
-                $this->direction = 2;
-                $this->moveForward($number);
-                $this->direction = $prev;
+                $this->moveForward($number, 2);
                 break;
             case "W":
-                $prev = $this->direction;
-                $this->direction = 3;
-                $this->moveForward($number);
-                $this->direction = $prev;
+                $this->moveForward($number, 3);
                 break;
         }
     }
 
-    public function moveForward($units) {
-        switch ($this->direction) {
+    public function moveForward($units, $direction) {
+        switch ($direction) {
             case 0:
                 $this->y += $units;
-                $this->accY += $units;
                 break;
             case 1:
                 $this->x += $units;
-                $this->accX += $units;
                 break;
             case 2:
                 $this->y -= $units;
-                $this->accY += $units;
                 break;
             case 3:
                 $this->x -= $units;
-                $this->accX += $units;
                 break;
         }
     }
 
     public function calculateDirectionFromDirectionAndDegrees($originalDirection, $newDirection, $degrees)
     {
-
-        $add = 0;
-        switch ($newDirection) {
-            case "L":
-                $add = -($degrees / 90);
-                break;
-            case "R":
-                $add = ($degrees / 90);
-                break;
+        if ($newDirection == "L" && $degrees != 180) {
+            $degrees += 180;
         }
 
-        if (!is_int($add)) {
-            die('GRADI NON AMMESSI');
-        }
-
+        $add = ($degrees / 90);
         $newDirection = $originalDirection+$add;
-
-        if ($newDirection < 0) {
-            $newDirection = 4+$newDirection;
-        }
-
-        if ($newDirection > 3) {
-            $newDirection = $newDirection - 4;
-        }
-
+        $newDirection = $newDirection % 4;
 
         return $newDirection;
     }
