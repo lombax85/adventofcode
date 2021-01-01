@@ -175,11 +175,12 @@ foreach ($tile as $row) {
 
 $newBigTile = new Tile(10000, $newTile);
 
+
 $monster = '                  # 
 #    ##    ##    ###
  #  #  #  #  #  #   ';
 
-$candidateMonster = '/#....##....##....###/';
+$candidateMonster = '/(?=(#....##....##....###))/'; // qui uso un lookahead altrimenti non becca gli overlapping https://stackoverflow.com/questions/22454032/preg-match-all-how-to-get-all-combinations-even-overlapping-ones
 $candidateMonsterTop = '/..................#./';
 $candidateMonsterBottom = '/.#..#..#..#..#..#.../';
 
@@ -190,9 +191,17 @@ for($mode = 0; $mode <= 7; $mode++) {
     $matches = [];
     $candidates = preg_match_all($candidateMonster, $bigTileString, $matches);
 
-    echo "found ".count($matches[0])." candidate monsters \n";
+    echo "found ".count($matches[1])." candidate monsters \n";
+
+    if (count($matches[1]) == 37) {
+        echo "\n\n\n\n";
+        echo $bigTileString;
+
+        echo "\n\n\n\n";
+    }
+
     if (count($matches) > 0) {
-        foreach ($matches[0] as $match) {
+        foreach ($matches[1] as $match) {
             $pos = strpos($bigTileString, $match);
             $upperPos = $pos - count($newBigTile->get()[0]) - 1;
             $lowerPos = $pos + count($newBigTile->get()[0]) + 1;
@@ -209,7 +218,9 @@ for($mode = 0; $mode <= 7; $mode++) {
                 echo $match1."\n";
                 echo $match2."\n";
                 echo $upperSubstr."\n";
+                echo substr($bigTileString, $pos, strlen($candidateMonster)-2)."\n";
                 echo $lowerSubstr."\n";
+                echo "positions: pos $pos, upper $upperPos, lower $lowerPos \n";
             }
         }
 
@@ -239,3 +250,34 @@ $total = substr_count($bigTileString, '#') - $remove;
 echo "found $monsterMatches monsters, there is a total of $t # and removing $remove \n";
 
 echo $total;
+
+/**
+// C'è un errore nella regex perchè su queste righe (monster 37):
+
+..##..#...#...#..#..#.#.#..#.###..............##...#.#.........#.......#......#.##..#...#...#..#
+....#..#.##....##.#..###...#....#..#.##..##....#...##.#..#.....#....#.#..##...###....###..#####.
+...#.#..##.#..#..##.#...#...#............#.....#...#...#...#.#.............##.##.##.##.#..#.#...
+
+mi trova questo match per la riga centrale
+ *
+ *
+#.#..##...###....###
+ *
+ * che però sopra e sotto non ha un monster.
+ *
+...#......#.##..#...
+#.#..##...###....###
+.......##.##.##.##.#
+ *
+ * Però 11 caratteri più avanti c'è un altro match (sono 2 match in overlap) e per qualche motivo non mi viene contato nei matches, sbaglio qualcosa nell'uso delle regex
+ * Visivamente ho visto che è un monster valido
+ *
+....#.##..#...#...#.
+#...###....###..####
+.##.##.##.##.#..#.#.
+ *
+ * risolto poi con un lookahead come indicato qui
+ * https://stackoverflow.com/questions/22454032/preg-match-all-how-to-get-all-combinations-even-overlapping-ones
+ *
+ *
+ * */
