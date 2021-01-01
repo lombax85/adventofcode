@@ -46,16 +46,9 @@ for ($i = 0; $i < count($tiles); $i++) {
             if ($t1->hasCommonBorders($t2)) {
                 $associationMap[$t1->id][] = $t2->id;
             }
-
-            if ($t1->associatesRight($t2)) {
-                $rightAssociationMap[$t1->id][] = $t2->id;
-            }
-
-            if ($t1->associatesBottom($t2)) {
-                $bottomAssociationMap[$t1->id][] = $t2->id;
-            }
         }
     }
+    echo $i."\n";
 }
 
 // start to create matrix from corners
@@ -155,18 +148,79 @@ $bigTile = "";
 
 foreach ($matrix as $row) {
 
-    for ($i = 0; $i < 10; $i++) {
+    for ($i = 1; $i < 9; $i++) {
 
         foreach ($row as $singleTile) {
             $tile = $singleTile->get();
-            $bigTile .= " ".implode("", $tile[$i]);
+            $tileReduced = array_slice($tile[$i], 1, -1);
+            $bigTile .= "".implode("", $tileReduced);
         }
 
         $bigTile .= "\n";
     }
 
-    $bigTile .="\n";
+    //$bigTile .="\n";
 }
 
+// create a new big tile
 
-echo $bigTile;
+$bigTile = rtrim($bigTile);
+
+$tile = explode("\n", $bigTile);
+
+$newTile = [];
+foreach ($tile as $row) {
+    $newTile[] = str_split($row);
+}
+
+$newBigTile = new Tile(10000, $newTile);
+
+$monster = '                  # 
+#    ##    ##    ###
+ #  #  #  #  #  #   ';
+
+$candidateMonster = '/#....##....##....###/';
+$candidateMonsterTop = '/..................#./';
+$candidateMonsterBottom = '/.#..#..#..#..#..#.../';
+
+$monsterMatches = 0;
+for($mode = 0; $mode <= 7; $mode++) {
+    $bigTileString = $newBigTile->print();
+
+    $matches = [];
+    $candidates = preg_match_all($candidateMonster, $bigTileString, $matches);
+    if (count($matches) > 0) {
+        foreach ($matches[0] as $match) {
+            $pos = strpos($bigTileString, $match);
+            $upperPos = $pos - count($newBigTile->get()[0]) - 1;
+            $lowerPos = $pos + count($newBigTile->get()[0]) + 1;
+
+            $upperSubstr = substr($bigTileString, $upperPos, strlen($candidateMonsterTop)-2);
+            $lowerSubstr = substr($bigTileString, $lowerPos, strlen($candidateMonsterBottom)-2);
+
+            $match1 = preg_match($candidateMonsterTop, $upperSubstr);
+            $match2 = preg_match($candidateMonsterBottom, $lowerSubstr);
+
+            if ($match1 && $match2)
+                $monsterMatches++;
+        }
+
+        if ($monsterMatches)
+            break;
+    }
+
+
+
+//    echo $bigTileString;
+//    echo "\n\n";
+    $newBigTile->nextMode();
+
+}
+
+// monster ha 15 #
+$monsterItems = substr_count($monster, '#');
+$remove = $monsterItems * $monsterMatches;
+
+$total = substr_count($bigTileString, '#') - $remove;
+
+echo $total;

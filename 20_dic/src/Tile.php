@@ -228,8 +228,6 @@ class Tile
         $t1 = $this;
         $t2 = $newTile;
 
-        $actualAssociations = 0;
-
         for($t1Mode = 0; $t1Mode <= 7; $t1Mode++) {
             for($t2Mode = 0; $t2Mode <= 7; $t2Mode++) {
 
@@ -247,27 +245,11 @@ class Tile
                                 'other_side' => $j,
                             ];
 
-                            $actualAssociations++;
-
-                            if ($t1->id == "1951" && $t2->id == "2729") {
-                                echo "";
-                            }
-//                            $t2->associations[] = [
-//                                'this_id' => $t2->id,
-//                                'other_id' => $t1->id,
-//                                'this_mode' => $t2Mode,
-//                                'other_mode' => $t1Mode,
-//                                'this_side' => $j,
-//                                'other_side' => $i,
-//                            ];
-
                             // block them
                             $t1->actualMode = $t1Mode;
                             $t1->tile = $t1->modes[$t1Mode];
                             $t2->actualMode = $t2Mode;
                             $t2->tile = $t2->modes[$t2Mode];
-//                            $t1->blocked = true;
-//                            $t2->blocked = true;
 
                             return true;
                         }
@@ -276,106 +258,9 @@ class Tile
             }
         }
 
-//        if ($actualAssociations > 0)
-//            return true;
-
         return false;
     }
 
-
-    public function associatesRight($newTile) {
-
-        /**
-         * @var $t1 Tile
-         * @var $t2 Tile
-         */
-        $t1 = $this;
-        $t2 = $newTile;
-
-        $actualAssociations = 0;
-
-        for($t1Mode = 0; $t1Mode <= 7; $t1Mode++) {
-            for($t2Mode = 0; $t2Mode <= 7; $t2Mode++) {
-
-                $i = 1; // only right side
-
-                for ($j = 0; $j <= 3; $j++) {
-                    $t1Borders = $t1->getBorders($t1Mode);
-                    $t2Borders = $t2->getBorders($t2Mode);
-                    if ($t1Borders[$i] == $t2Borders[$j]) {
-                        $t1->rightAssociations[] = [
-                            'this_id' => $t1->id,
-                            'other_id' => $t2->id,
-                            'this_mode' => $t1Mode,
-                            'other_mode' => $t2Mode,
-                            'this_side' => $i,
-                            'other_side' => $j,
-                        ];
-
-                        // block them
-                        $t1->actualMode = $t1Mode;
-                        $t1->tile = $t1->modes[$t1Mode];
-                        $t2->actualMode = $t2Mode;
-                        $t2->tile = $t2->modes[$t2Mode];
-//                        $t1->blocked = true;
-//                        $t2->blocked = true;
-
-                        return true;
-                    }
-                }
-
-            }
-        }
-
-        return false;
-    }
-
-    public function associatesBottom($newTile) {
-
-        /**
-         * @var $t1 Tile
-         * @var $t2 Tile
-         */
-        $t1 = $this;
-        $t2 = $newTile;
-
-        $actualAssociations = 0;
-
-        for($t1Mode = 0; $t1Mode <= 7; $t1Mode++) {
-            for($t2Mode = 0; $t2Mode <= 7; $t2Mode++) {
-
-                $i = 2; // only bottom side
-
-                for ($j = 0; $j <= 3; $j++) {
-                    $t1Borders = $t1->getBorders($t1Mode);
-                    $t2Borders = $t2->getBorders($t2Mode);
-                    if ($t1Borders[$i] == $t2Borders[$j]) {
-                        $t1->bottomAssociations[] = [
-                            'this_id' => $t1->id,
-                            'other_id' => $t2->id,
-                            'this_mode' => $t1Mode,
-                            'other_mode' => $t2Mode,
-                            'this_side' => $i,
-                            'other_side' => $j,
-                        ];
-
-                        // block them
-                        $t1->actualMode = $t1Mode;
-                        $t1->tile = $t1->modes[$t1Mode];
-                        $t2->actualMode = $t2Mode;
-                        $t2->tile = $t2->modes[$t2Mode];
-//                        $t1->blocked = true;
-//                        $t2->blocked = true;
-
-                        return true;
-                    }
-                }
-
-            }
-        }
-
-        return false;
-    }
 
     public function attachRight(Tile $rightCandidate)
     {
