@@ -7,7 +7,7 @@
 require_once './vendor/autoload.php';
 
 
-$data = file_get_contents('./20_dic.txt');
+$data = file_get_contents('./20_dic_full.txt');
 $tiles_raw = explode("\n\n", $data);
 
 $tiles = [];
@@ -189,6 +189,8 @@ for($mode = 0; $mode <= 7; $mode++) {
 
     $matches = [];
     $candidates = preg_match_all($candidateMonster, $bigTileString, $matches);
+
+    echo "found ".count($matches[0])." candidate monsters \n";
     if (count($matches) > 0) {
         foreach ($matches[0] as $match) {
             $pos = strpos($bigTileString, $match);
@@ -203,24 +205,37 @@ for($mode = 0; $mode <= 7; $mode++) {
 
             if ($match1 && $match2)
                 $monsterMatches++;
+            else {
+                echo $match1."\n";
+                echo $match2."\n";
+                echo $upperSubstr."\n";
+                echo $lowerSubstr."\n";
+            }
         }
 
-        if ($monsterMatches)
+        if ($monsterMatches) {
+            //echo "we have $monsterMatches monster matches but see the next \n";
+            //$monsterMatches = 0;
             break;
+        }
     }
-
 
 
 //    echo $bigTileString;
 //    echo "\n\n";
     $newBigTile->nextMode();
+    echo "next mode \n";
 
 }
+
 
 // monster ha 15 #
 $monsterItems = substr_count($monster, '#');
 $remove = $monsterItems * $monsterMatches;
 
+$t = substr_count($bigTileString, '#');
 $total = substr_count($bigTileString, '#') - $remove;
+
+echo "found $monsterMatches monsters, there is a total of $t # and removing $remove \n";
 
 echo $total;
