@@ -131,7 +131,7 @@ class Tile
         }
     }
 
-    protected function nextMode() : int {
+    public function nextMode() : int {
 
         if (!$this->blocked) {
             if ($this->actualMode == 7)
@@ -266,8 +266,8 @@ class Tile
                             $t1->tile = $t1->modes[$t1Mode];
                             $t2->actualMode = $t2Mode;
                             $t2->tile = $t2->modes[$t2Mode];
-                            $t1->blocked = true;
-                            $t2->blocked = true;
+//                            $t1->blocked = true;
+//                            $t2->blocked = true;
 
                             return true;
                         }
@@ -317,8 +317,8 @@ class Tile
                         $t1->tile = $t1->modes[$t1Mode];
                         $t2->actualMode = $t2Mode;
                         $t2->tile = $t2->modes[$t2Mode];
-                        $t1->blocked = true;
-                        $t2->blocked = true;
+//                        $t1->blocked = true;
+//                        $t2->blocked = true;
 
                         return true;
                     }
@@ -364,14 +364,66 @@ class Tile
                         $t1->tile = $t1->modes[$t1Mode];
                         $t2->actualMode = $t2Mode;
                         $t2->tile = $t2->modes[$t2Mode];
-                        $t1->blocked = true;
-                        $t2->blocked = true;
+//                        $t1->blocked = true;
+//                        $t2->blocked = true;
 
                         return true;
                     }
                 }
 
             }
+        }
+
+        return false;
+    }
+
+    public function attachRight(Tile $rightCandidate)
+    {
+        $t1 = $this;
+        $t2 = $rightCandidate;
+
+        if ($t1->id == $t2->id)
+            return false;
+
+        $t1Borders = $t1->getBorders($t1->getActualMode());
+        $t1RightBorder = $t1Borders[1];
+
+
+        for($mode = 0; $mode <= 7; $mode++) {
+            $t2Borders = $t2->getBorders($t2->getActualMode());
+            $t2LeftBorder = $t2Borders[3];
+
+            if ($t1RightBorder == $t2LeftBorder) {
+                return $t2;
+            }
+
+            $t2->nextMode();
+        }
+
+        return false;
+    }
+
+    public function attachBottom(Tile $rightCandidate)
+    {
+        $t1 = $this;
+        $t2 = $rightCandidate;
+
+        if ($t1->id == $t2->id)
+            return false;
+
+        $t1Borders = $t1->getBorders($t1->getActualMode());
+        $t1BottomBorder = $t1Borders[2];
+
+
+        for($mode = 0; $mode <= 7; $mode++) {
+            $t2Borders = $t2->getBorders($t2->getActualMode());
+            $t2TopBorder = $t2Borders[0];
+
+            if ($t1BottomBorder == $t2TopBorder) {
+                return $t2;
+            }
+
+            $t2->nextMode();
         }
 
         return false;

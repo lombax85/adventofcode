@@ -73,45 +73,100 @@ $squareSize = sqrt(count($tiles));
 $matrix[0][0] = $firstCorner;
 $previous = $firstCorner;
 $firstOfTheLine = $firstCorner;
+$tileMapTemp = $tileMap;
 
 $i = 0;
 $j = 1;
 
 while (true) {
 
-    $rightTileID = $previous->getRightTile();
+    $rightFound = false;
+    foreach ($tileMapTemp as $tile) {
+        $res = $previous->attachRight($tile);
 
-
-    if ($rightTileID) {
-        $rightTile = $tileMap[$rightTileID];
-        $matrix[$i][$j] = $rightTile;
-        $previous = $rightTile;
-        $j++;
-    } else {
-        // go to next line
-        $j = 0;
-        $i++;
-
-        $bottomTileID = $firstOfTheLine->getBottomTile();
-
-        if ($bottomTileID) {
-            $bottomTile = $associationMap[$bottomTileID];
-            $matrix[$i][$j] = $bottomTile;
-            $firstOfTheLine = $bottomTile;
-        } else {
-            break; // finish
+        if ($res) {
+            $matrix[$i][$j] = $res;
+            $previous = $res;
+            $j++;
+            $rightFound = true;
+            break;
         }
     }
-}
+
+    if ($rightFound) {
+        // remove the previous tile from $tiles
+        unset($tileMapTemp[$previous->id]);
+    } else {
+        // not found, posso essere al bordo (lo capisco dal valore di $j)
+        // oppure sono nella strada sbagliata, riavvolgo
+
+        if ($j == $squareSize) {
+            // sono al bordo, cambio riga
+            $i++;
+
+            if ($i == $squareSize && $j == $squareSize) {
+                // FINITO
+                break;
+            }
+
+                $j = 0;
+
+            $bottomFound = false;
+            foreach ($tileMapTemp as $tile) {
+                $res = $firstOfTheLine->attachBottom($tile);
+
+                if ($res) {
+                    $matrix[$i][$j] = $res;
+                    $firstOfTheLine = $res;
+                    $previous = $res;
+                    $bottomFound = true;
+                    $j++;
+                    break;
+                }
+            }
+
+            if (!$bottomFound) {
+                // devo riavvolgere e girare il primo
+                $firstCorner->nextMode();
+                $matrix[0][0] = $firstCorner;
+                $i = 0;
+                $j = 1;
+                $previous = $firstCorner;
+                $firstOfTheLine = $firstCorner;
+                $tileMapTemp = $tileMap;
+            }
 
 
-for ($i = 0; $i < $squareSize; $i++) {
-    for ($j = 0; $j < $squareSize; $j++) {
-
-
-
+        } else {
+            // devo riavvolgere e girare il primo
+            $firstCorner->nextMode();
+            $matrix[0][0] = $firstCorner;
+            $i = 0;
+            $j = 1;
+            $previous = $firstCorner;
+            $firstOfTheLine = $firstCorner;
+            $tileMapTemp = $tileMap;
+        }
 
     }
 }
 
-echo "test";
+$bigTile = "";
+
+foreach ($matrix as $row) {
+
+    for ($i = 0; $i < 10; $i++) {
+
+        foreach ($row as $singleTile) {
+            $tile = $singleTile->get();
+            $bigTile .= " ".implode("", $tile[$i]);
+        }
+
+        $bigTile .= "\n";
+    }
+
+    $bigTile .="\n";
+}
+
+
+echo $bigTile;
